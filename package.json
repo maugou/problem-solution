@@ -1,0 +1,18 @@
+{
+  "name": "coding-problem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^26.5.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "eslint-plugin-jest": "^24.1.0"
+  }
+}
