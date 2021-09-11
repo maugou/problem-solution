@@ -1,4 +1,4 @@
-const { solution } = require("./coding-4");
+const { solution } = require("./example-1");
 
 // 3, 6, 9 게임
 test("example", () => {
