@@ -21,11 +21,3 @@ function solution(number) {
 }
 
 module.exports = { solution };
-
-const a = () => {
-  const b = [1, 2, 3];
-  const [, ...result] = b;
-  console.log(result);
-};
-
-a();
