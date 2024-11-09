@@ -1,55 +1,63 @@
 const solution = (n) => {
   const array = Array.from({ length: n }, (value, index) =>
-    Array.from({ length: index + 1 }, (v, i) => null)
+    Array.from({ length: index + 1 }, () => null)
   );
 
   const length = array.reduce((acc, cur) => {
     return acc + cur.length;
   }, 0);
 
-  let direction = 1; // 위 아래 방향
-  let currentIndex = 0; // 현재 index (층)
+  // let topIndex = 0; // 채워야할 가장 위 칸 index
+  let bottomIndex = n - 1; // 채워야할 가장 아래 칸 index
+  let rightLength = n - 1; // 오른쪽으로 가야할 거리
 
-  let horizontalPoint = 0; // 양쪽 좁히는 포인트
-  let verticalPoint = 1; // 위 아래 좁히는 포인트 (층)
+  let verticalIndex = 0; // 상하 index
+  let horizontalIndex = 0; // 좌우 index
 
-  let lastArrayIndex = 0;
+  let direction = 1; // 상하 방향 ( 1일 경우 아래로, -1일 경우 위로 )
 
-  for (i = 1; i <= length; i++) {
-    /* 방향이 내려간 경우에 채워야할 가장 아래 층 */
-    if (currentIndex === n - verticalPoint && direction === 1) {
-      array[currentIndex][lastArrayIndex] = i;
-      lastArrayIndex++;
+  for (let i = 1; i <= length; i++) {
+    // 도착한 곳이 null 이면 숫자 채우기
+    if (array[verticalIndex][horizontalIndex] === null) {
+      array[verticalIndex].splice(horizontalIndex, 1, i);
 
-      /* 해당 층에서 가로를 다 채울 경우 */
-      if (lastArrayIndex === array[currentIndex].length - horizontalPoint) {
-        direction *= -1; // 방향 전환
-        currentIndex += direction; // 층 이동
-        lastArrayIndex = horizontalPoint + 1; // 마지막 층 시작 index 초기화
+      // 위,아래로 움직일지 결정
+      if (verticalIndex < bottomIndex) {
+        const nextVerticalIndex = verticalIndex + direction;
+
+        if (
+          array[nextVerticalIndex][horizontalIndex - 1] !== null &&
+          direction === -1
+        ) {
+          direction *= -1; // 방향 바꾸기
+          bottomIndex--;
+        }
+
+        if (direction === -1) {
+          horizontalIndex--;
+        }
+
+        verticalIndex += direction;
+
+        continue;
       }
 
-      continue;
+      // 오른쪽으로 움직일지 결정
+      if (verticalIndex === bottomIndex && horizontalIndex < rightLength) {
+        horizontalIndex++;
+
+        continue;
+      }
+
+      // 채워야할 공간의 가장 오른쪽 아래 위치 할 경우 방향 전환
+      if (verticalIndex === bottomIndex && horizontalIndex === rightLength) {
+        direction *= -1; // 방향 바꾸기
+        verticalIndex += direction; // 상하 위치 조정
+        horizontalIndex--; // 좌우 간격 좁히기
+
+        rightLength -= 2;
+      }
     }
-
-    /* 방향이 올라오면서 채워야할 가장 위 층 */
-    if (currentIndex === verticalPoint && direction === -1) {
-      array[currentIndex][array[currentIndex].length - 1 - horizontalPoint] =
-        i;
-      direction *= -1; // 방향 전환
-      horizontalPoint++;
-      verticalPoint++;
-      currentIndex += direction;
-
-      continue;
-    }
-
-    const currentPointIndex =
-      direction > 0
-        ? horizontalPoint
-        : array[currentIndex].length - 1 - horizontalPoint;
-
-    array[currentIndex][currentPointIndex] = i;
-    currentIndex += direction;
   }
 
   return array.flat();
